@@ -51,7 +51,7 @@ public class Program
         {
             app.UseSwagger();
             app.UseSwaggerUI();
-            await app.SeedDataAsync();
+           // await app.SeedDataAsync();
         }
 
         app.UseHttpsRedirection();
