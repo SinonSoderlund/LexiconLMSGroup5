@@ -34,8 +34,7 @@
                             <NavLink class="nav-link" href="Account/Manage">
                                 <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span> @context.User.Identity?.Name
                             </NavLink>
-                        </div>
-                        <div class="nav-item px-2">
+                        </div> <div class="nav-item px-2">
                             <form action="Account/Logout" method="post">
                                 <AntiforgeryToken />
                                 <input type="hidden" name="ReturnUrl" value=@*"@currentUrl"*@ />
@@ -44,7 +43,16 @@
                                 </button>
                             </form>
                         </div>
-                    </Authorized>
+                        <div class="nav-item px-2 float-end">
+                            
+                                <AntiforgeryToken />
+                                
+                                <button  class="btn btn-outline-secondary nav-link">
+                                <span class="bi bi-list-nested-nav-menu " aria-hidden="true"></span> @mockUser.Name
+                                </button>
+                            
+                        </div>
+                       
                     </NotAuthorized>
                 </AuthorizeView>
 

@@ -20,7 +20,13 @@ main {
     display: flex;
     align-items: center;
 }
-
+.bi{
+    background-color: none;
+    
+}
+.nav-link{
+color: snow;
+}
     .top-row ::deep a, .top-row ::deep .btn-link {
         white-space: nowrap;
         margin-left: 1.5rem;
