@@ -118,7 +118,7 @@ namespace LMS.Presemtation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> EditEnrollment(int courseId, string userId, int newCourseId)
         {
-            var course = await _context.Courses.FindAsync(courseId);
+            var course = await _context.Courses.Where(c=>c.CourseId == courseId).Include(c=>c.Enrollments).FirstOrDefaultAsync();
             if (courseId == newCourseId) return BadRequest("Current and new course cannot have the same course Id");
 
             if (course == null)
@@ -132,11 +132,23 @@ namespace LMS.Presemtation.Controllers
                 return NotFound("Student not found");
             }
 
-            var newCourse = await _context.Courses.FindAsync(newCourseId);
+            if (!course.Enrollments.Any(u=>u.Id == userId))
+            {
+                return BadRequest($"User is not enrolled in course with Id: {courseId}.");
+            }
+
+            var newCourse = await _context.Courses.Where(c => c.CourseId == courseId).Include(c => c.Enrollments).FirstOrDefaultAsync();
+
+            if(!course.Enrollments.Any(u => u.Id == userId))
+            {
+                return BadRequest($"User is already enrolled in course with Id: {newCourseId}.");
+            }
             if (course == null)
             {
                 return NotFound("New course not found");
             }
+
+
 
             user.Enrollments.Remove(course);
             user.Enrollments.Add(newCourse);
