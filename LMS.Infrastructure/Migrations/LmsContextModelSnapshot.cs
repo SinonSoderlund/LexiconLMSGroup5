@@ -34,7 +34,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("EnrollmentsId");
 
-                    b.ToTable("ApplicationUserCourse");
+                    b.ToTable("ApplicationUserCourse", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Entities.Activity", b =>
@@ -71,7 +71,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("Activities");
+                    b.ToTable("Activities", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Entities.ActivityType", b =>
@@ -88,7 +88,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasKey("ActivityTypeId");
 
-                    b.ToTable("ActivityTypes");
+                    b.ToTable("ActivityTypes", (string)null);
 
                     b.HasData(
                         new
@@ -226,7 +226,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasKey("CourseId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Entities.Document", b =>
@@ -259,7 +259,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("UploadedById");
 
-                    b.ToTable("Documents");
+                    b.ToTable("Documents", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Entities.Module", b =>
@@ -291,7 +291,7 @@ namespace LMS.Infrastructure.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Modules");
+                    b.ToTable("Modules", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

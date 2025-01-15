@@ -33,8 +33,8 @@ public static class SeedData
             try
             {
                 await CreateRolesAsync([teacherRole, studentRole]);
-                await GenerateUsersAsync(10, 4);
-                await AssignRolesAsync(db.Users.ToList());
+                await GenerateUsersAsync(10);
+                await AssignRolesAsync(await db.Users.ToListAsync(), 4);
 
                 List<Course> courses = await GenerateCoursesAsync(3);
                  await db.Courses.AddRangeAsync(courses);
@@ -48,7 +48,7 @@ public static class SeedData
                 await db.Activities.AddRangeAsync(activities);
                 await db.SaveChangesAsync();
 
-                await EnrollUsersInCourses(await db.Users.Where(u=>u.Role == teacherRole).Include(t=>t.Enrollments).ToListAsync(), await db.Users.Where(u=>u.Role == studentRole).Include(t => t.Enrollments).ToListAsync(), await db.Courses.ToListAsync());
+                await EnrollUsersInCourses(await db.Courses.Include(c=>c.Enrollments).ToListAsync());
                 await db.SaveChangesAsync();
             }
             catch (Exception ex)
@@ -58,24 +58,28 @@ public static class SeedData
         }
     }
 
-    private static async Task EnrollUsersInCourses(List<ApplicationUser> teachers, List<ApplicationUser> students, List<Course> courses)
+    private static async Task EnrollUsersInCourses(List<Course> courses)
     {
+        List<ApplicationUser> teachers = (List<ApplicationUser>)await userManager.GetUsersInRoleAsync(teacherRole);
+
+        List<ApplicationUser> students = (List<ApplicationUser>)await userManager.GetUsersInRoleAsync(studentRole);
+
         var rnd = new Random();
         int extraTeachers= teachers.Count-courses.Count;
         int i = 0;
         for (i = 0; i < courses.Count; i++)
         {
-            teachers[i].Enrollments.Add(courses[i]);
+            courses[i].Enrollments.Add(teachers[i]);
         }
         //Adds teachers that are left after assigning one to each course to a random course
         for ( int j = 0; j < extraTeachers; j++) 
         {
-            teachers[i++].Enrollments.Add(courses[rnd.Next(0,courses.Count-1)]);
+            courses[rnd.Next(0,courses.Count-1)].Enrollments.Add(teachers[i++]);
         }
 
         foreach (var student in students)
         {
-            student.Enrollments.Add(courses[rnd.Next(0, courses.Count - 1)]);
+            courses[rnd.Next(0, courses.Count - 1)].Enrollments.Add(student);
         }
 
     }
@@ -146,17 +150,24 @@ public static class SeedData
     }
 
     //Assigns set number of teachers and remaining users to students
-    private static async Task AssignRolesAsync(List<ApplicationUser> users)
+    private static async Task AssignRolesAsync(List<ApplicationUser> users, int nrOfTeachers)
     {
+        int i = 0;
+        string role = teacherRole;
            foreach (var user in users) {
-
-
-            if (!await userManager.IsInRoleAsync(user, user.Role))
+            if (i >= nrOfTeachers)
             {
-                var result = await userManager.AddToRoleAsync(user, user.Role);
+                role = studentRole;
+            }
+            else i++;
+
+            if (!await userManager.IsInRoleAsync(user, role))
+            {
+                var result = await userManager.AddToRoleAsync(user, role);
                 if (!result.Succeeded) throw new Exception(string.Join("\n", result.Errors));
 
             }
+
         }
     }
     
@@ -173,15 +184,15 @@ public static class SeedData
         }
     }
 
-    private static async Task GenerateUsersAsync(int nrOfUsers, int nrOfTeachers)
+    private static async Task GenerateUsersAsync(int nrOfUsers)
     {
-        int i = 0;
+        
         var faker = new Faker<ApplicationUser>("sv").Rules((f, e) =>
         {
             e.Email = f.Person.Email;
             e.UserName = f.Person.Email;
             e.Name = f.Person.FullName;
-            e.Role = i++ < nrOfTeachers ? "Teacher" : "Student";
+            
         });
 
         var users = faker.Generate(nrOfUsers);
