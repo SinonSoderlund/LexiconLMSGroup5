@@ -1,20 +1,205 @@
+
+:root {
+    --primary-color: #7ebeea;
+    --primary-hover-color: #40a5eb;
+    --secondary-color: #ec8f6a;
+    --secondary-hover-color: #e66d3d;
+    --success-color: #8bbabb;
+    --success-hover-color: #6ba7a8;
+    --info-color: #e2c275;
+    --info-hover-color: #d9af4b;
+    --danger-color: #b96b9f;
+    --danger-hover-color: #a44d87;
+    --focus-shadow-color: #258cfb;
+}
+
+/******** Fonts *******/
+.roboto-regular {
+    font-family: "Roboto", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.roboto-medium {
+    font-family: "Roboto", serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.roboto-bold {
+    font-family: "Roboto", serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.roboto-regular-italic {
+    font-family: "Roboto", serif;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.roboto-medium-italic {
+    font-family: "Roboto", serif;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.roboto-bold-italic {
+    font-family: "Roboto", serif;
+    font-weight: 700;
+    font-style: italic;
+}
+
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: Roboto, sans-serif;
+    color: #41464b;
+}
+
+.nav-scrollable {
+    background: #1b2a47 !important;
+}
+
+.nav-link active {
+    font-weight: 500 !important;
 }
 
 a, .btn-link {
     color: #006bb7;
 }
 
-.btn-primary {
+/******** Customize buttons *******/
+
+.btn {
+    border-radius: 5px;
+    padding: 6px 16px !important;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
     color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/*********** Primary buttons *******/
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
+
+    .btn-primary:hover {
+        border-color: var(--primary-hover-color) !important;
+        background: var(--primary-hover-color) !important;
+    }
+
+.btn-outline-primary {
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+    .btn-outline-primary:hover {
+        color: #fff;
+        background-color: var(--primary-hover-color);
+        border: 1px solid var(--primary-hover-color);
+    }
+
+/*********** Secondary buttons *******/
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+    .btn-secondary:hover {
+        border-color: var(--secondary-hover-color) !important;
+        background: var(--secondary-hover-color) !important;
+    }
+
+.btn-outline-secondary {
+    border: 1px solid var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+    .btn-outline-secondary:hover {
+        color: #fff;
+        background-color: var(--secondary-hover-color);
+        border: 1px solid var(--secondary-hover-color);
+    }
+
+/*********** Success buttons *******/
+
+.btn-success {
+    border-color: var(--success-color);
+    background: var(--success-color);
+}
+
+    .btn-success:hover {
+        border-color: var(--success-hover-color) !important;
+        background: var(--success-hover-color) !important;
+    }
+
+/*********** Info buttons *******/
+
+.btn-info {
+    background: var(--info-color);
+    border-color: var(--info-color);
+}
+
+    .btn-info:hover {
+        border-color: var(--info-hover-color) !important;
+        background: var(--info-hover-color) !important;
+        color: #fff;
+    }
+
+/*********** Danger buttons *******/
+
+.btn-danger {
+    border-color: var(--danger-color);
+    background: var(--danger-color);
+}
+
+    .btn-danger:hover {
+        border-color: var(--danger-hover-color) !important;
+        background: var(--danger-hover-color) !important;
+    }
+
+/******** Focus State *******/
+
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem var(--focus-shadow-color);
+}
+
+/******** Invalid input field color *******/
+
+.invalid {
+    outline: 1px solid var(--danger-color) !important;
+}
+
+/******** Custom text colors *******/
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-danger, .validation-message {
+    color: var(--danger-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-warning {
+    color: var(--danger-color) !important;
+}
+
+.text-info {
+    color: var(--secondary-color) !important;
+}
+
 
 .content {
     padding-top: 1.1rem;
@@ -48,4 +233,23 @@ h1:focus {
 
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
+}
+
+.logo{
+    width: 40px;
+}
+
+.custom-min-vh-80 {
+    min-height: 80vh;
+}
+
+.bg-image {
+    background-image: url('https://mdbootstrap.com/img/new/textures/full/171.jpg');
+    height: 300px;
+}
+
+.h4-marg {
+    margin-top: 15px;
+    margin-bottom: 10px;
+    margin-left: 5px;
 }
