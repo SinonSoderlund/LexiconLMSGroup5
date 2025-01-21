@@ -44,6 +44,8 @@ public class Program
 
         builder.Services.Configure<PasswordHasherOptions>(options => options.IterationCount = 10000);
 
+        builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

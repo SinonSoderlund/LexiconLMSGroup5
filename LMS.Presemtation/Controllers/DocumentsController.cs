@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LMS.Shared.DTOs.DocumentDTOs;
+using Microsoft.Extensions.Configuration;
 
 namespace LMS.Presemtation.Controllers
 {
@@ -15,18 +16,23 @@ namespace LMS.Presemtation.Controllers
         private readonly LmsContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _environment; // To get to the wwwroot folder where files are saved
+        private readonly string _uploadPath;
 
-        public DocumentsController(LmsContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment environment)
+        public DocumentsController(LmsContext context, UserManager<ApplicationUser> userManager, IWebHostEnvironment environment, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
             _environment = environment;
+            var relativeUploadPath = configuration["UploadSettings:RelativeUploadPath"] ?? throw new InvalidOperationException("Upload path is not configured.");
+            _uploadPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, relativeUploadPath));
+            _environment.WebRootPath = _uploadPath;
         }
 
         // Upload a document
         [HttpPost("upload")]
         public async Task<IActionResult> UploadDocument([FromForm] DocumentUploadDto dto)
         {
+            _environment.WebRootPath = _uploadPath;
             if (string.IsNullOrEmpty(_environment.WebRootPath))
             {
                 throw new InvalidOperationException("WebRootPath is not configured.");
@@ -77,7 +83,7 @@ namespace LMS.Presemtation.Controllers
                 message = "File uploaded successfully",
                 documentId = document.DocumentId,
                 fileName = document.Name,
-                downloadUrl = Url.Action("DownloadDocument", new { id = document.DocumentId })  //generates a URL for downloading a document
+                downloadUrl = Url.Action("DownloadDocument", new { id = document.DocumentId })  //generates a URL for downloading
             });
         }
 
