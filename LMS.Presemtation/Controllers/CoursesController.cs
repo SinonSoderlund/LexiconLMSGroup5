@@ -3,6 +3,8 @@ using LMS.Shared.DTOs.CourseDTOs;
 using Microsoft.AspNetCore.JsonPatch;
 using Services.Contracts;
 using AutoMapper;
+using Domain.Models.Entities;
+using System.Text.Json;
 
 namespace LMS.Presemtation.Controllers
 {
@@ -21,9 +23,36 @@ namespace LMS.Presemtation.Controllers
 
         // GET: api/Courses
         [HttpGet]
-        public async Task<ActionResult> GetCourses(bool includeModules = false, bool includeEnrollments = false)
+        public async Task<ActionResult> GetCourses(
+            bool includeModules = false, 
+            bool includeEnrollments = false,
+            int pageNr = 1,
+            int pageSize = 10,
+            string? sortBy = null,
+            bool isAscending = true,
+            string? filteringValue = null
+            )
         {
-            var courses = await _serviceManager.CourseService.GetAllCoursesAsync(includeModules, includeEnrollments);
+            var (courses, totalCount) = await _serviceManager.CourseService.GetAllCoursesAsync(
+               includeModules: includeModules,
+               includeEnrollments: includeEnrollments,
+               pageNr: pageNr,
+               pageSize: pageSize,
+               sortBy: sortBy,
+               isAscending: isAscending,
+               filteringValue: filteringValue
+               );
+
+            var metadata = new
+            {
+                TotalItems = totalCount,
+                PageSize = pageSize,
+                CurrentPage = pageNr,
+                TotalPages = (totalCount / pageSize)
+            };
+
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(metadata));
+
             return Ok(courses);
         }
 

@@ -2,8 +2,10 @@
 using Domain.Contracts;
 using Domain.Models.Entities;
 using LMS.Shared.DTOs.CourseDTOs;
+using LMS.Shared.DTOs.ModuleDTOs;
 using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
+using System.Linq.Expressions;
 
 namespace LMS.Services
 {
@@ -19,25 +21,35 @@ namespace LMS.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CourseDTO>> GetAllCoursesAsync(
+        public async Task<(IEnumerable<CourseDTO> Courses, int TotalCount)> GetAllCoursesAsync(
             bool includeModules = false,
             bool includeEnrollments = false,
-            int pageNr = 1,
-            int pageSize = 10)
+            int? pageNr = null,
+            int? pageSize = null,
+            string? sortBy = null,
+            bool isAscending = true,
+            string? filteringValue = null)
         {
+            Expression<Func<Course, bool>> filter = c =>
+               (string.IsNullOrEmpty(filteringValue) || c.Name.Contains(filteringValue));
+            
             IQueryable<Course> query = _uow.Courses.Query();
 
             if (includeModules) query = query.Include(m => m.Modules);
 
             if (includeEnrollments) query = query.Include(e => e.Enrollments);
 
-            //pagination
-            var courses = await query
-                .Skip((pageNr - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            var (courses, totalCount) = await _uow.Courses.GetFilteredAndSortedEntitiesAsync(
+                filter: filter,
+                sortBy: sortBy,
+                isAscending: isAscending,
+                pageNr: pageNr,
+                pageSize: pageSize
+            );
 
-            return _mapper.Map<IEnumerable<CourseDTO>>(courses);
+            var courseDTOs = _mapper.Map<IEnumerable<CourseDTO>>(courses);
+
+            return (courseDTOs, totalCount);
         }
 
         public async Task<CourseDTO> GetCourseByIdAsync(int id, bool includeModules = false, bool includeEnrollments = false)
