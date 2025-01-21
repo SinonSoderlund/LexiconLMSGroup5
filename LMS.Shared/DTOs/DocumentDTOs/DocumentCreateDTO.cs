@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace LMS.Shared.DTOs.DocumentDTOs
 {
-    public class DocumentDto
+    public class DocumentCreateDTO
     {
-        public int DocumentId { get; set; }
+       // public int DocumentId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-
-        public string DownloadUrl { get; set; }
         public DateTime UploadedAt { get; set; }
         public ApplicationUser UploadedBy { get; set; }
         public string FilePath { get; set; }

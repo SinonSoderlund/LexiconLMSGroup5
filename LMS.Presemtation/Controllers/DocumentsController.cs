@@ -8,8 +8,6 @@ using LMS.Shared.DTOs.DocumentDTOs;
 
 namespace LMS.Presemtation.Controllers
 {
-
-
     [ApiController]
     [Route("api/documents")]
     public class DocumentsController : ControllerBase
@@ -29,6 +27,10 @@ namespace LMS.Presemtation.Controllers
         [HttpPost("upload")]
         public async Task<IActionResult> UploadDocument([FromForm] DocumentUploadDto dto)
         {
+            if (string.IsNullOrEmpty(_environment.WebRootPath))
+            {
+                throw new InvalidOperationException("WebRootPath is not configured.");
+            }
             if (dto.File == null || dto.File.Length == 0) return BadRequest("No file uploaded.");
 
             // File type and size validation
@@ -39,7 +41,7 @@ namespace LMS.Presemtation.Controllers
             if (dto.File.Length > maxFileSize) return BadRequest("File size exceeds the size limit.");
 
             var currentUser = await _userManager.GetUserAsync(User);
-            if (currentUser == null) return Unauthorized();
+           // if (currentUser == null) return Unauthorized();
             //Todo: separate logic for teacher vs student
 
             var uniqueFileName = $"{Guid.NewGuid()}_{Path.GetFileName(dto.File.FileName)}";
@@ -93,7 +95,7 @@ namespace LMS.Presemtation.Controllers
             //ToDo: Implement restrictions on who can access what documents
             var documentDto = new DocumentDto
             {
-                Id = document.DocumentId,
+                DocumentId = document.DocumentId,
                 Name = document.Name,
                 Description = document.Description,
                 UploadedAt = document.UploadedAt,
@@ -115,7 +117,7 @@ namespace LMS.Presemtation.Controllers
                 .Where(d => d.ModuleId == moduleId)
                 .Select(d => new DocumentDto
                    {
-                       Id = d.DocumentId,
+                       DocumentId = d.DocumentId,
                        Name = d.Name,
                        Description = d.Description,
                        UploadedAt = d.UploadedAt,
@@ -138,7 +140,7 @@ namespace LMS.Presemtation.Controllers
                 .Where(d => d.ActivityId == activityId)
                 .Select(d => new DocumentDto
                 {
-                    Id = d.DocumentId,
+                    DocumentId = d.DocumentId,
                     Name = d.Name,
                     Description = d.Description,
                     UploadedAt = d.UploadedAt,
