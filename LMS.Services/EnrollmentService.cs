@@ -204,9 +204,8 @@ namespace LMS.Services
 
         public async Task<ApiBaseResponse> GetUsers(string? roleFilter, int pageNr, int pageSize)
         {
-            IQueryable<ApplicationUser> query = _uow.Courses.Query()                                                              
-                                                              .Include(c => c.Enrollments)
-                                                              .SelectMany(c => c.Enrollments);
+            IQueryable<ApplicationUser> query = _uow.Enrollments.UserQuery()
+                                                                .Where(u => u.Role == roleFilter);
             int totalCount = query.Count();
 
             var userList = await query
