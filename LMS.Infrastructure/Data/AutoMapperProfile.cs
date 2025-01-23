@@ -53,7 +53,7 @@ public class AutoMapperProfile : Profile
 
 
         CreateMap<ApplicationUserDTO, ApplicationUser>().ReverseMap();
-        CreateMap<ApplicationUser, ApplicationUserListDTO>();
+        CreateMap<ApplicationUser, ApplicationUserListDTO>()
 
         CreateMap<ApplicationUser , EnrolledUserDTO > ();
         

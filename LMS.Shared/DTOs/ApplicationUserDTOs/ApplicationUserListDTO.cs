@@ -11,7 +11,6 @@ namespace LMS.Shared.DTOs.ApplicationUserDTOs
         public string? Id { get; init; }
         public string? Name { get; init; }
         public string? Email { get; init; }
-        public int CourseID { get; init; }
         public string? Role {  get; init; }
     }
 }
