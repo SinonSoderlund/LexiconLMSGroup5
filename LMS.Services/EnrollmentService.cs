@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Services.Contracts;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.IO;
+using static Domain.Models.Responses.UserDublicateEnrollmentResponse;
 
 namespace LMS.Services
 {
@@ -40,7 +41,11 @@ namespace LMS.Services
                                       
             if (string.IsNullOrEmpty(user.Role)) 
                 return new UserMissingRoleResponse();
-              
+
+            if (course.Enrollments.Any(u => u.Id == user.Id))
+                return new UserDublicateEnrollmentResponse(user.Id, courseId);
+
+
             if (user.Role == "Student")
             {
                  if (course.Enrollments.Any(u => u.Id == createDto.UserId))
@@ -207,6 +212,7 @@ namespace LMS.Services
 
         public async Task<ApiBaseResponse> GetUsers(string? roleFilter, int pageNr = 1, int pageSize=1)
         {
+            if (roleFilter == null) roleFilter = "";
             IQueryable<ApplicationUser> query = _uow.Enrollments.UserQuery()
                                                               .Where(u => u.Role == roleFilter);
 
